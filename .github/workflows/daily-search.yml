@@ -48,6 +48,8 @@ jobs:
       - name: Run scraper and generate HTML
         if: steps.date-check.outputs.expired == 'false'
         run: python scraper.py
+        env:
+          SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
 
       - name: Commit updated listings and page
         if: steps.date-check.outputs.expired == 'false'

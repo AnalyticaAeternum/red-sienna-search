@@ -20,6 +20,8 @@ LAKEWOOD_LON = -118.1339
 MIN_PRICE = 26000
 MAX_PRICE = 46000
 
+SCRAPER_API_KEY = os.environ.get('SCRAPER_API_KEY', '')
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
@@ -28,6 +30,14 @@ HEADERS = {
     'DNT': '1',
     'Connection': 'keep-alive',
 }
+
+
+def fetch(url, timeout=60):
+    """Fetch URL through ScraperAPI if key is set, otherwise direct."""
+    if SCRAPER_API_KEY:
+        proxy_url = f'http://api.scraperapi.com?api_key={SCRAPER_API_KEY}&url={requests.utils.quote(url, safe="")}'
+        return requests.get(proxy_url, timeout=timeout)
+    return requests.get(url, headers=HEADERS, timeout=timeout)
 
 PLATFORM_URLS = {
     'AutoTrader':   'https://www.autotrader.com/cars-for-sale/used-cars/toyota/sienna/lakewood-ca-90712?minPrice=26000&maxPrice=46000&startYear=2021&endYear=2025&trimCodeList=SIENNA%7CXLE&searchRadius=500&extColorsSimple=RED',
@@ -94,7 +104,7 @@ def scrape_craigslist():
     # RSS feed avoids anti-bot JS challenges
     rss_url = 'https://losangeles.craigslist.org/search/cta?format=rss&query=toyota+sienna+xle&min_price=26000&max_price=46000&sort=date'
     try:
-        resp = requests.get(rss_url, headers=HEADERS, timeout=20)
+        resp = fetch(rss_url)
         resp.raise_for_status()
 
         # BeautifulSoup handles RSS 1.0 and 2.0 via xml parser
@@ -138,7 +148,7 @@ def scrape_craigslist():
         print(f'  Craigslist RSS failed: {e}')
         # Fallback: try plain HTML
         try:
-            resp2 = requests.get(PLATFORM_URLS['Craigslist LA'], headers=HEADERS, timeout=20)
+            resp2 = fetch(PLATFORM_URLS['Craigslist LA'])
             soup2 = BeautifulSoup(resp2.text, 'lxml')
             for item in soup2.select('li.cl-search-result, li.result-row')[:40]:
                 link_el = item.select_one('a.result-title, a.cl-app-anchor, a[href]')
@@ -171,7 +181,7 @@ def scrape_cars_com():
            '&year_max=2025&year_min=2021'
            '&zip=90712&maximum_distance=500&stock_type=used')
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=25)
+        resp = fetch(url)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'lxml')
 
@@ -254,7 +264,7 @@ def scrape_ebay_motors():
            '&LH_ItemCondition=3000'
            '&LH_BIN=1')
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp = fetch(url)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'lxml')
 
@@ -305,7 +315,7 @@ def scrape_cargurus():
            '?zip=90712&distance=500&minPrice=26000&maxPrice=46000'
            '&minYear=2021&maxYear=2025&sortField=PRICE_CHANGE_TIME&sortDir=DESC')
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp = fetch(url)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'lxml')
 
