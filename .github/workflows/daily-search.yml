@@ -1,0 +1,65 @@
+name: Daily Red Sienna Search
+
+on:
+  schedule:
+    # 11:30 AM Pacific Daylight Time = 18:30 UTC (Apr-Nov)
+    # If clocks fall back, change to 19:30 UTC for standard time
+    - cron: '30 18 * * *'
+  workflow_dispatch:  # allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  search-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if search period is still active
+        id: date-check
+        run: |
+          TODAY=$(date +%Y%m%d)
+          END_DATE=20260517
+          if [ "$TODAY" -gt "$END_DATE" ]; then
+            echo "expired=true" >> "$GITHUB_OUTPUT"
+            echo "Search period ended May 17 2026. Workflow stopping."
+          else
+            echo "expired=false" >> "$GITHUB_OUTPUT"
+            echo "Date OK: $TODAY — continuing search."
+          fi
+
+      - name: Checkout repository
+        if: steps.date-check.outputs.expired == 'false'
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        if: steps.date-check.outputs.expired == 'false'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        if: steps.date-check.outputs.expired == 'false'
+        run: pip install -r requirements.txt
+
+      - name: Run scraper and generate HTML
+        if: steps.date-check.outputs.expired == 'false'
+        run: python scraper.py
+
+      - name: Commit updated listings and page
+        if: steps.date-check.outputs.expired == 'false'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add listings.json index.html
+          git diff --staged --quiet || git commit -m "[AUTO] Update listings — $(date +%Y-%m-%d)"
+          git push
+
+      - name: Send daily email
+        if: steps.date-check.outputs.expired == 'false'
+        run: python email_sender.py
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
