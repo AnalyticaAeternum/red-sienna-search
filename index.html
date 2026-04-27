@@ -7,171 +7,91 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d0d18; color: #ddd; min-height: 100vh; }
-
-    header {
-      background: linear-gradient(135deg, #1a0000 0%, #2d0000 60%, #180505 100%);
-      border-bottom: 3px solid #cc0000;
-      padding: 2rem 1.5rem;
-      text-align: center;
-    }
-    header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); color: #ff4444; text-shadow: 0 0 24px rgba(255,68,68,.45); letter-spacing: -0.5px; }
+    header { background: linear-gradient(135deg, #1a0000 0%, #2d0000 60%, #180505 100%); border-bottom: 3px solid #cc0000; padding: 2rem 1.5rem; text-align: center; }
+    header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); color: #ff4444; text-shadow: 0 0 24px rgba(255,68,68,.45); }
     header p { color: #aaa; margin-top: .5rem; font-size: .95rem; }
-
-    .stats {
-      display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap;
-      padding: 1rem 1.5rem; background: #11111e; border-bottom: 1px solid #222235;
-    }
-    .stat {
-      background: #191928; border: 1px solid #2a2a45; border-radius: 10px;
-      padding: .75rem 1.5rem; text-align: center; min-width: 110px;
-    }
+    .stats { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; padding: 1rem 1.5rem; background: #11111e; border-bottom: 1px solid #222235; }
+    .stat { background: #191928; border: 1px solid #2a2a45; border-radius: 10px; padding: .75rem 1.5rem; text-align: center; min-width: 110px; }
     .stat .num { font-size: 1.9rem; font-weight: 700; color: #ff4444; line-height: 1; }
     .stat .lbl { font-size: .7rem; color: #777; text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
-
     .updated { text-align: center; padding: .6rem; background: #0b0b16; font-size: .75rem; color: #555; border-bottom: 1px solid #191928; }
-
-    .controls {
-      display: flex; gap: .5rem; justify-content: center; align-items: center;
-      flex-wrap: wrap; padding: 1.25rem 1.5rem; background: #11111e; border-bottom: 1px solid #1e1e32;
-    }
+    .controls { display: flex; gap: .5rem; justify-content: center; align-items: center; flex-wrap: wrap; padding: 1.25rem 1.5rem; background: #11111e; border-bottom: 1px solid #1e1e32; }
     .controls span { color: #666; font-size: .82rem; }
-    .sort-btn {
-      background: #191928; border: 1px solid #2a2a45; color: #bbb;
-      padding: .45rem 1rem; border-radius: 6px; cursor: pointer; font-size: .82rem;
-      transition: background .15s, border-color .15s, color .15s;
-    }
+    .sort-btn { background: #191928; border: 1px solid #2a2a45; color: #bbb; padding: .45rem 1rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: background .15s, border-color .15s, color .15s; }
     .sort-btn:hover { background: #8b0000; border-color: #cc0000; color: #fff; }
     .sort-btn.active { background: #cc0000; border-color: #ff4444; color: #fff; font-weight: 600; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 1.25rem; padding: 1.5rem;
-      max-width: 1400px; margin: 0 auto;
-    }
-
-    .card {
-      background: #191928; border: 1px solid #2a2a45; border-radius: 12px;
-      overflow: hidden; transition: transform .2s, border-color .2s, box-shadow .2s;
-      display: flex; flex-direction: column;
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.25rem; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+    .card { background: #191928; border: 1px solid #2a2a45; border-radius: 12px; overflow: hidden; transition: transform .2s, border-color .2s, box-shadow .2s; display: flex; flex-direction: column; }
     .card:hover { transform: translateY(-4px); border-color: #cc0000; box-shadow: 0 8px 24px rgba(204,0,0,.2); }
-
     .card-img { position: relative; height: 200px; background: #0d0d18; overflow: hidden; flex-shrink: 0; }
     .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .no-photo { display: flex; align-items: center; justify-content: center; height: 100%; color: #444; font-size: .85rem; }
-
-    .badge-new {
-      position: absolute; top: 10px; left: 10px;
-      background: #cc0000; color: #fff; padding: 2px 8px;
-      border-radius: 4px; font-size: .68rem; font-weight: 700; letter-spacing: .5px;
-      text-transform: uppercase;
-    }
-    .plat-badge {
-      position: absolute; bottom: 10px; right: 10px;
-      background: rgba(0,0,0,.72); color: #ccc; padding: 2px 8px;
-      border-radius: 4px; font-size: .68rem;
-    }
-
+    .badge-new { position: absolute; top: 10px; left: 10px; background: #cc0000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: .68rem; font-weight: 700; text-transform: uppercase; }
+    .plat-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,.72); color: #ccc; padding: 2px 8px; border-radius: 4px; font-size: .68rem; }
     .card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
     .card-title { font-size: .95rem; font-weight: 600; color: #e0e0e0; margin-bottom: .4rem; line-height: 1.3; }
     .price { font-size: 1.5rem; font-weight: 700; color: #ff4444; margin-bottom: .4rem; }
     .meta { display: flex; gap: .75rem; font-size: .78rem; color: #777; margin-bottom: .4rem; flex-wrap: wrap; }
     .date-found { font-size: .72rem; color: #484860; margin-bottom: .75rem; flex: 1; }
-    .btn-view {
-      display: block; width: 100%; text-align: center; margin-top: auto;
-      background: #cc0000; color: #fff; text-decoration: none;
-      padding: .6rem 1rem; border-radius: 7px; font-weight: 600; font-size: .88rem;
-      transition: background .15s;
-    }
+    .btn-view { display: block; width: 100%; text-align: center; margin-top: auto; background: #cc0000; color: #fff; text-decoration: none; padding: .6rem 1rem; border-radius: 7px; font-weight: 600; font-size: .88rem; transition: background .15s; }
     .btn-view:hover { background: #ee1111; }
-
-    .no-results {
-      grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #555;
-    }
+    .no-results { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #555; }
     .no-results h2 { color: #cc0000; margin-bottom: .75rem; }
-
     .manual-section { max-width: 1400px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; }
-    .manual-section h2 {
-      color: #666; font-size: .78rem; text-transform: uppercase; letter-spacing: 1px;
-      margin-bottom: .75rem; border-top: 1px solid #1e1e32; padding-top: 1.25rem;
-    }
+    .manual-section h2 { color: #666; font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: .75rem; border-top: 1px solid #1e1e32; padding-top: 1.25rem; }
     .manual-links { display: flex; gap: .6rem; flex-wrap: wrap; }
-    .manual-link {
-      background: #191928; border: 1px solid #2a2a45; color: #999;
-      padding: .4rem .85rem; border-radius: 6px; text-decoration: none; font-size: .8rem;
-      transition: border-color .15s, color .15s;
-    }
+    .manual-link { background: #191928; border: 1px solid #2a2a45; color: #999; padding: .4rem .85rem; border-radius: 6px; text-decoration: none; font-size: .8rem; transition: border-color .15s, color .15s; }
     .manual-link:hover { border-color: #cc0000; color: #ff6666; }
-
-    footer {
-      text-align: center; padding: 1.5rem; color: #3a3a55; font-size: .76rem;
-      border-top: 1px solid #1a1a2e;
-    }
-
-    @media (max-width: 500px) {
-      .stat .num { font-size: 1.5rem; }
-      .grid { padding: 1rem; gap: 1rem; }
-    }
+    footer { text-align: center; padding: 1.5rem; color: #3a3a55; font-size: .76rem; border-top: 1px solid #1a1a2e; }
+    @media (max-width: 500px) { .stat .num { font-size: 1.5rem; } .grid { padding: 1rem; gap: 1rem; } }
   </style>
 </head>
 <body>
-
 <header>
   <h1>&#128663; Red Toyota Sienna XLE Finder</h1>
   <p>2021&ndash;2025 &nbsp;&bull;&nbsp; $26,000&ndash;$46,000 &nbsp;&bull;&nbsp; Within 500 miles of Lakewood, CA</p>
 </header>
-
 <div class="stats">
   <div class="stat"><div class="num">0</div><div class="lbl">Total Listings</div></div>
   <div class="stat"><div class="num">0</div><div class="lbl">New Today</div></div>
   <div class="stat"><div class="num">0</div><div class="lbl">Platforms Live</div></div>
 </div>
-
-<div class="updated">Last updated: April 27, 2026 at 01:10 AM UTC &nbsp;&bull;&nbsp; Auto-updates daily through May 17, 2026</div>
-
+<div class="updated">Last updated: April 27, 2026 at 01:25 AM UTC &nbsp;&bull;&nbsp; Auto-updates daily through May 17, 2026</div>
 <div class="controls">
   <span>Sort:</span>
-  <button class="sort-btn active" onclick="sortCards('date', this)">Newest First</button>
-  <button class="sort-btn" onclick="sortCards('price_asc', this)">Price &#8593;</button>
-  <button class="sort-btn" onclick="sortCards('price_desc', this)">Price &#8595;</button>
-  <button class="sort-btn" onclick="sortCards('mileage', this)">Mileage &#8593;</button>
-  <button class="sort-btn" onclick="sortCards('distance', this)">Distance &#8593;</button>
+  <button class="sort-btn active" onclick="sortCards('date',this)">Newest First</button>
+  <button class="sort-btn" onclick="sortCards('price_asc',this)">Price &#8593;</button>
+  <button class="sort-btn" onclick="sortCards('price_desc',this)">Price &#8595;</button>
+  <button class="sort-btn" onclick="sortCards('mileage',this)">Mileage &#8593;</button>
+  <button class="sort-btn" onclick="sortCards('distance',this)">Distance &#8593;</button>
 </div>
-
 <div class="grid" id="grid">
-  <div class="no-results"><h2>No listings found yet</h2><p>Check back tomorrow or use the manual search links below.</p></div>
+  <div class="no-results"><h2>No listings found yet</h2><p>Use the manual search links below while the scraper is tuning.</p></div>
 </div>
-
 <div class="manual-section">
   <h2>&#128279; Search Manually on All Platforms</h2>
-  <div class="manual-links"><a href="https://www.autotrader.com/cars-for-sale/used-cars/toyota/sienna/lakewood-ca-90712?minPrice=26000&maxPrice=46000&startYear=2021&endYear=2025&trimCodeList=SIENNA%7CXLE&searchRadius=500&extColorsSimple=RED" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; AutoTrader</a><a href="https://www.cars.com/shopping/results/?makes[]=toyota&models[]=toyota-sienna&list_price_max=46000&list_price_min=26000&year_max=2025&year_min=2021&zip=90712&maximum_distance=500&stock_type=used" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Cars.com</a><a href="https://www.cargurus.com/Cars/new/nl_Toyota_Sienna_d2280?zip=90712&distance=500&minPrice=26000&maxPrice=46000&minYear=2021&maxYear=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarGurus</a><a href="https://www.truecar.com/used-cars-for-sale/listings/toyota/sienna/?zip=90712&searchRadius=500&price%5Bmax%5D=46000&price%5Bmin%5D=26000&year%5Bmax%5D=2025&year%5Bmin%5D=2021&trim%5B%5D=XLE" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; TrueCar</a><a href="https://www.edmunds.com/toyota/sienna/used/#zip=90712&radius=500" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Edmunds</a><a href="https://www.kbb.com/toyota/sienna/used-cars/#zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; KBB</a><a href="https://www.carsdirect.com/cars-for-sale/toyota/sienna?zip=90712&distance=500&min_price=26000&max_price=46000&min_year=2021&max_year=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarsDirect</a><a href="https://losangeles.craigslist.org/search/cta?query=toyota+sienna+xle&min_price=26000&max_price=46000&sort=date" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Craigslist LA</a><a href="https://www.carzing.com/used-cars/?zip=90712&radius=500&make=toyota&model=sienna&min_price=26000&max_price=46000&min_year=2021&max_year=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarZing</a><a href="https://www.dealerrater.com/cars-for-sale/toyota/sienna/?zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; DealerRater</a></div>
+  <div class="manual-links"><a href="https://www.autotrader.com/cars-for-sale/used-cars/toyota/sienna/lakewood-ca-90712?minPrice=26000&maxPrice=46000&startYear=2021&endYear=2025&trimCodeList=SIENNA%7CXLE&searchRadius=500&extColorsSimple=RED" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; AutoTrader</a><a href="https://www.cars.com/shopping/results/?makes[]=toyota&models[]=toyota-sienna&list_price_max=46000&list_price_min=26000&year_max=2025&year_min=2021&zip=90712&maximum_distance=500&stock_type=used" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Cars.com</a><a href="https://www.cargurus.com/Cars/new/nl_Toyota_Sienna_d2280?zip=90712&distance=500&minPrice=26000&maxPrice=46000&minYear=2021&maxYear=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarGurus</a><a href="https://www.truecar.com/used-cars-for-sale/listings/toyota/sienna/?zip=90712&searchRadius=500&price%5Bmax%5D=46000&price%5Bmin%5D=26000&year%5Bmax%5D=2025&year%5Bmin%5D=2021&trim%5B%5D=XLE" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; TrueCar</a><a href="https://www.edmunds.com/toyota/sienna/used/#zip=90712&radius=500" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Edmunds</a><a href="https://www.kbb.com/toyota/sienna/used-cars/#zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; KBB</a><a href="https://www.carsdirect.com/cars-for-sale/toyota/sienna?zip=90712&distance=500&min_price=26000&max_price=46000&min_year=2021&max_year=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarsDirect</a><a href="https://losangeles.craigslist.org/search/cta?query=toyota+sienna+xle&min_price=26000&max_price=46000&sort=date" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Craigslist LA</a><a href="https://www.ebay.com/sch/Cars-Trucks/6001/i.html?_nkw=toyota+sienna+xle&LH_BIN=1&_udlo=26000&_udhi=46000&LH_ItemCondition=3000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; eBay Motors</a><a href="https://www.dealerrater.com/cars-for-sale/toyota/sienna/?zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; DealerRater</a></div>
 </div>
-
-<footer>
-  Red Toyota Sienna XLE Finder &nbsp;&bull;&nbsp; Lakewood CA 90712 &nbsp;&bull;&nbsp; Runs daily until May 17, 2026
-</footer>
-
+<footer>Red Toyota Sienna XLE Finder &nbsp;&bull;&nbsp; Lakewood CA 90712 &nbsp;&bull;&nbsp; Runs daily until May 17, 2026</footer>
 <script>
-(function() {
-  const grid = document.getElementById('grid');
+(function(){
+  var grid = document.getElementById('grid');
   window.sortCards = function(method, btn) {
-    const cards = Array.from(grid.querySelectorAll('.card'));
-    cards.sort(function(a, b) {
-      switch(method) {
-        case 'price_asc':  return (parseInt(a.dataset.price)||999999) - (parseInt(b.dataset.price)||999999);
-        case 'price_desc': return (parseInt(b.dataset.price)||0) - (parseInt(a.dataset.price)||0);
-        case 'mileage':    return (parseInt(a.dataset.mileage)||999999) - (parseInt(b.dataset.mileage)||999999);
-        case 'distance':   return (parseFloat(a.dataset.distance)||9999) - (parseFloat(b.dataset.distance)||9999);
-        default:           return new Date(b.dataset.date) - new Date(a.dataset.date);
+    var cards = Array.from(grid.querySelectorAll('.card'));
+    cards.sort(function(a,b){
+      switch(method){
+        case 'price_asc':  return (parseInt(a.dataset.price)||999999)-(parseInt(b.dataset.price)||999999);
+        case 'price_desc': return (parseInt(b.dataset.price)||0)-(parseInt(a.dataset.price)||0);
+        case 'mileage':    return (parseInt(a.dataset.mileage)||999999)-(parseInt(b.dataset.mileage)||999999);
+        case 'distance':   return (parseFloat(a.dataset.distance)||9999)-(parseFloat(b.dataset.distance)||9999);
+        default:           return new Date(b.dataset.date)-new Date(a.dataset.date);
       }
     });
-    cards.forEach(function(c) { grid.appendChild(c); });
-    document.querySelectorAll('.sort-btn').forEach(function(el) { el.classList.remove('active'); });
-    if (btn) btn.classList.add('active');
+    cards.forEach(function(c){grid.appendChild(c);});
+    document.querySelectorAll('.sort-btn').forEach(function(el){el.classList.remove('active');});
+    if(btn) btn.classList.add('active');
   };
 })();
 </script>
-
 </body>
 </html>
