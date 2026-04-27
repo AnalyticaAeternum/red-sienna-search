@@ -7,91 +7,201 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d0d18; color: #ddd; min-height: 100vh; }
-    header { background: linear-gradient(135deg, #1a0000 0%, #2d0000 60%, #180505 100%); border-bottom: 3px solid #cc0000; padding: 2rem 1.5rem; text-align: center; }
-    header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); color: #ff4444; text-shadow: 0 0 24px rgba(255,68,68,.45); }
-    header p { color: #aaa; margin-top: .5rem; font-size: .95rem; }
-    .stats { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; padding: 1rem 1.5rem; background: #11111e; border-bottom: 1px solid #222235; }
-    .stat { background: #191928; border: 1px solid #2a2a45; border-radius: 10px; padding: .75rem 1.5rem; text-align: center; min-width: 110px; }
-    .stat .num { font-size: 1.9rem; font-weight: 700; color: #ff4444; line-height: 1; }
-    .stat .lbl { font-size: .7rem; color: #777; text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
-    .updated { text-align: center; padding: .6rem; background: #0b0b16; font-size: .75rem; color: #555; border-bottom: 1px solid #191928; }
-    .controls { display: flex; gap: .5rem; justify-content: center; align-items: center; flex-wrap: wrap; padding: 1.25rem 1.5rem; background: #11111e; border-bottom: 1px solid #1e1e32; }
-    .controls span { color: #666; font-size: .82rem; }
-    .sort-btn { background: #191928; border: 1px solid #2a2a45; color: #bbb; padding: .45rem 1rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: background .15s, border-color .15s, color .15s; }
-    .sort-btn:hover { background: #8b0000; border-color: #cc0000; color: #fff; }
-    .sort-btn.active { background: #cc0000; border-color: #ff4444; color: #fff; font-weight: 600; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.25rem; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
-    .card { background: #191928; border: 1px solid #2a2a45; border-radius: 12px; overflow: hidden; transition: transform .2s, border-color .2s, box-shadow .2s; display: flex; flex-direction: column; }
-    .card:hover { transform: translateY(-4px); border-color: #cc0000; box-shadow: 0 8px 24px rgba(204,0,0,.2); }
-    .card-img { position: relative; height: 200px; background: #0d0d18; overflow: hidden; flex-shrink: 0; }
-    .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .no-photo { display: flex; align-items: center; justify-content: center; height: 100%; color: #444; font-size: .85rem; }
-    .badge-new { position: absolute; top: 10px; left: 10px; background: #cc0000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: .68rem; font-weight: 700; text-transform: uppercase; }
-    .plat-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,.72); color: #ccc; padding: 2px 8px; border-radius: 4px; font-size: .68rem; }
-    .card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
-    .card-title { font-size: .95rem; font-weight: 600; color: #e0e0e0; margin-bottom: .4rem; line-height: 1.3; }
-    .price { font-size: 1.5rem; font-weight: 700; color: #ff4444; margin-bottom: .4rem; }
-    .meta { display: flex; gap: .75rem; font-size: .78rem; color: #777; margin-bottom: .4rem; flex-wrap: wrap; }
-    .date-found { font-size: .72rem; color: #484860; margin-bottom: .75rem; flex: 1; }
-    .btn-view { display: block; width: 100%; text-align: center; margin-top: auto; background: #cc0000; color: #fff; text-decoration: none; padding: .6rem 1rem; border-radius: 7px; font-weight: 600; font-size: .88rem; transition: background .15s; }
-    .btn-view:hover { background: #ee1111; }
-    .no-results { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #555; }
-    .no-results h2 { color: #cc0000; margin-bottom: .75rem; }
-    .manual-section { max-width: 1400px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; }
-    .manual-section h2 { color: #666; font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: .75rem; border-top: 1px solid #1e1e32; padding-top: 1.25rem; }
-    .manual-links { display: flex; gap: .6rem; flex-wrap: wrap; }
-    .manual-link { background: #191928; border: 1px solid #2a2a45; color: #999; padding: .4rem .85rem; border-radius: 6px; text-decoration: none; font-size: .8rem; transition: border-color .15s, color .15s; }
-    .manual-link:hover { border-color: #cc0000; color: #ff6666; }
-    footer { text-align: center; padding: 1.5rem; color: #3a3a55; font-size: .76rem; border-top: 1px solid #1a1a2e; }
-    @media (max-width: 500px) { .stat .num { font-size: 1.5rem; } .grid { padding: 1rem; gap: 1rem; } }
+
+    header {
+      background: linear-gradient(135deg, #1a0000 0%, #2d0000 60%, #180505 100%);
+      border-bottom: 3px solid #cc0000;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+    }
+    header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); color: #ff4444; text-shadow: 0 0 30px rgba(255,68,68,.5); margin-bottom: .6rem; }
+    .criteria { display: inline-flex; gap: .6rem; flex-wrap: wrap; justify-content: center; margin-top: .75rem; }
+    .criteria span { background: rgba(204,0,0,.2); border: 1px solid rgba(204,0,0,.4); color: #ffaaaa; padding: .3rem .85rem; border-radius: 20px; font-size: .85rem; }
+
+    .section-label { text-align: center; padding: 1.75rem 1rem .75rem; font-size: .7rem; text-transform: uppercase; letter-spacing: 2px; color: #555; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; padding: .5rem 1.5rem 1rem; max-width: 1300px; margin: 0 auto; }
+
+    .card { background: #191928; border: 1px solid #2a2a45; border-radius: 12px; padding: 1.4rem 1.2rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: .4rem; transition: transform .18s, border-color .18s, box-shadow .18s; }
+    .card:hover { transform: translateY(-4px); border-color: #cc0000; box-shadow: 0 8px 28px rgba(204,0,0,.25); }
+    .card-name { font-size: 1.05rem; font-weight: 700; color: #fff; }
+    .card-desc { font-size: .78rem; color: #666; line-height: 1.45; }
+    .card-arrow { margin-top: auto; padding-top: .75rem; font-size: .8rem; color: #cc0000; font-weight: 600; }
+
+    .card.featured { border-color: #3a1a1a; background: #1a1020; }
+    .card.featured .card-name { color: #ff8080; }
+
+    footer { text-align: center; padding: 2rem 1rem; color: #333; font-size: .75rem; border-top: 1px solid #1a1a2e; margin-top: 1.5rem; }
+
+    @media (max-width: 500px) { .grid { padding: .5rem 1rem 1rem; } }
   </style>
 </head>
 <body>
+
 <header>
   <h1>&#128663; Red Toyota Sienna XLE Finder</h1>
-  <p>2021&ndash;2025 &nbsp;&bull;&nbsp; $26,000&ndash;$46,000 &nbsp;&bull;&nbsp; Within 500 miles of Lakewood, CA</p>
+  <div class="criteria">
+    <span>&#128197; 2021 &ndash; 2025</span>
+    <span>&#128176; $26,000 &ndash; $46,000</span>
+    <span>&#128205; 500 mi from Lakewood CA</span>
+    <span>&#127775; Trim: XLE</span>
+    <span>Color: Red</span>
+  </div>
 </header>
-<div class="stats">
-  <div class="stat"><div class="num">0</div><div class="lbl">Total Listings</div></div>
-  <div class="stat"><div class="num">0</div><div class="lbl">New Today</div></div>
-  <div class="stat"><div class="num">0</div><div class="lbl">Platforms Live</div></div>
+
+<!-- NATIONAL MARKETPLACES -->
+<div class="section-label">National Marketplaces</div>
+<div class="grid">
+
+  <a class="card" href="https://www.autotrader.com/cars-for-sale/used-cars/toyota/sienna/lakewood-ca-90712?minPrice=26000&maxPrice=46000&startYear=2021&endYear=2025&trimCodeList=SIENNA%7CXLE&searchRadius=500&extColorsSimple=RED" target="_blank" rel="noopener">
+    <div class="card-name">AutoTrader</div>
+    <div class="card-desc">Largest used car marketplace. Filtered for red XLE, price &amp; distance.</div>
+    <div class="card-arrow">Search AutoTrader &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.cars.com/shopping/results/?makes[]=toyota&models[]=toyota-sienna&list_price_max=46000&list_price_min=26000&year_max=2025&year_min=2021&zip=90712&maximum_distance=500&stock_type=used" target="_blank" rel="noopener">
+    <div class="card-name">Cars.com</div>
+    <div class="card-desc">National inventory with dealer ratings. Pre-filtered by price &amp; year.</div>
+    <div class="card-arrow">Search Cars.com &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.cargurus.com/Cars/new/nl_Toyota_Sienna_d2280?zip=90712&distance=500&minPrice=26000&maxPrice=46000&minYear=2021&maxYear=2025" target="_blank" rel="noopener">
+    <div class="card-name">CarGurus</div>
+    <div class="card-desc">Shows deal ratings — great, good, fair. Sorted by best value.</div>
+    <div class="card-arrow">Search CarGurus &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.truecar.com/used-cars-for-sale/listings/toyota/sienna/?zip=90712&searchRadius=500&price%5Bmax%5D=46000&price%5Bmin%5D=26000&year%5Bmax%5D=2025&year%5Bmin%5D=2021&trim%5B%5D=XLE" target="_blank" rel="noopener">
+    <div class="card-name">TrueCar</div>
+    <div class="card-desc">Market-based pricing. Good for knowing if the asking price is fair.</div>
+    <div class="card-arrow">Search TrueCar &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.edmunds.com/toyota/sienna/used/?zip=90712&radius=500&price_min=26000&price_max=46000&year_min=2021&year_max=2025" target="_blank" rel="noopener">
+    <div class="card-name">Edmunds</div>
+    <div class="card-desc">Trusted reviews + live inventory. Great for comparing trims &amp; features.</div>
+    <div class="card-arrow">Search Edmunds &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.kbb.com/toyota/sienna/used-cars/#zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener">
+    <div class="card-name">Kelley Blue Book</div>
+    <div class="card-desc">KBB price guarantee listings. See above/below market value at a glance.</div>
+    <div class="card-arrow">Search KBB &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.carfax.com/Used-Toyota-Sienna_z8/model?zip=90712&year1=2021&year2=2025&price1=26000&price2=46000" target="_blank" rel="noopener">
+    <div class="card-name">CarFax</div>
+    <div class="card-desc">History-verified listings. Filter directly for zero-accident vehicles.</div>
+    <div class="card-arrow">Search CarFax &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.iseecars.com/used-cars/used-toyota-sienna-for-sale#year_min=2021&year_max=2025&price_min=26000&price_max=46000&zip=90712&radius=500" target="_blank" rel="noopener">
+    <div class="card-name">iSeeCars</div>
+    <div class="card-desc">AI deal scoring. Automatically highlights underpriced listings.</div>
+    <div class="card-arrow">Search iSeeCars &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.ebay.com/sch/i.html?_sacat=6001&_nkw=toyota+sienna+xle+red&_udlo=26000&_udhi=46000&LH_ItemCondition=3000" target="_blank" rel="noopener">
+    <div class="card-name">eBay Motors</div>
+    <div class="card-desc">Private sellers &amp; dealers nationwide. Good for out-of-market deals.</div>
+    <div class="card-arrow">Search eBay Motors &#8594;</div>
+  </a>
+
+  <a class="card" href="https://losangeles.craigslist.org/search/cta?query=toyota+sienna+xle&min_price=26000&max_price=46000&sort=date" target="_blank" rel="noopener">
+    <div class="card-name">Craigslist LA</div>
+    <div class="card-desc">Private party sellers. No dealer fees, highly negotiable prices.</div>
+    <div class="card-arrow">Search Craigslist &#8594;</div>
+  </a>
+
 </div>
-<div class="updated">Last updated: April 27, 2026 at 01:41 AM UTC &nbsp;&bull;&nbsp; Auto-updates daily through May 17, 2026</div>
-<div class="controls">
-  <span>Sort:</span>
-  <button class="sort-btn active" onclick="sortCards('date',this)">Newest First</button>
-  <button class="sort-btn" onclick="sortCards('price_asc',this)">Price &#8593;</button>
-  <button class="sort-btn" onclick="sortCards('price_desc',this)">Price &#8595;</button>
-  <button class="sort-btn" onclick="sortCards('mileage',this)">Mileage &#8593;</button>
-  <button class="sort-btn" onclick="sortCards('distance',this)">Distance &#8593;</button>
+
+<!-- NO HAGGLE & CERTIFIED -->
+<div class="section-label">No-Haggle &amp; Certified</div>
+<div class="grid">
+
+  <a class="card featured" href="https://www.carvana.com/cars/toyota/sienna?year-max=2025&year-min=2021&price-max=46000&price-min=26000" target="_blank" rel="noopener">
+    <div class="card-name">Carvana</div>
+    <div class="card-desc">Home delivery + 7-day return policy. No-haggle fixed pricing.</div>
+    <div class="card-arrow">Search Carvana &#8594;</div>
+  </a>
+
+  <a class="card featured" href="https://www.carmax.com/cars/toyota/sienna?zip=90712&distance=500&priceMin=26000&priceMax=46000" target="_blank" rel="noopener">
+    <div class="card-name">CarMax</div>
+    <div class="card-desc">30-day money-back guarantee. Multiple SoCal locations. No-haggle price.</div>
+    <div class="card-arrow">Search CarMax &#8594;</div>
+  </a>
+
+  <a class="card featured" href="https://www.toyota.com/certified-used-vehicles/model/sienna" target="_blank" rel="noopener">
+    <div class="card-name">Toyota CPO</div>
+    <div class="card-desc">Toyota Certified Pre-Owned. Factory warranty included. Dealer inspected.</div>
+    <div class="card-arrow">Search Toyota CPO &#8594;</div>
+  </a>
+
+  <a class="card featured" href="https://www.carsdirect.com/cars-for-sale/toyota/sienna?zip=90712&distance=500&min_price=26000&max_price=46000&min_year=2021&max_year=2025" target="_blank" rel="noopener">
+    <div class="card-name">CarsDirect</div>
+    <div class="card-desc">Dealer network with upfront pricing. No back-and-forth negotiating.</div>
+    <div class="card-arrow">Search CarsDirect &#8594;</div>
+  </a>
+
 </div>
-<div class="grid" id="grid">
-  <div class="no-results"><h2>No listings found yet</h2><p>Use the manual search links below while the scraper is tuning.</p></div>
+
+<!-- SOCAL TOYOTA DEALERS -->
+<div class="section-label">Southern California Toyota Dealers</div>
+<div class="grid">
+
+  <a class="card" href="https://www.longotoyota.com/searchused.aspx?Make=Toyota&Model=Sienna&PriceMin=26000&PriceMax=46000" target="_blank" rel="noopener">
+    <div class="card-name">Longo Toyota</div>
+    <div class="card-desc">El Monte, CA &mdash; One of the largest Toyota dealers in the country.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.toyotaofcerritos.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Toyota of Cerritos</div>
+    <div class="card-desc">Cerritos, CA &mdash; Minutes from Lakewood. Large pre-owned selection.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.toyotaoforange.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Toyota of Orange</div>
+    <div class="card-desc">Orange, CA &mdash; High-volume dealer, frequent Sienna CPO stock.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.downeytoyota.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Downey Toyota</div>
+    <div class="card-desc">Downey, CA &mdash; Very close to Lakewood. Check their used lot first.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.penskecars.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Penske Toyota</div>
+    <div class="card-desc">Downey, CA &mdash; Large Penske group dealer, competitive pricing.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.santamonicatoyota.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Santa Monica Toyota</div>
+    <div class="card-desc">Santa Monica, CA &mdash; West side dealer, well-maintained CPO stock.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.torrance-toyota.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Toyota of Torrance</div>
+    <div class="card-desc">Torrance, CA &mdash; South Bay location, close to Lakewood.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
+  <a class="card" href="https://www.northridgetoyota.com/searchused.aspx?Make=Toyota&Model=Sienna" target="_blank" rel="noopener">
+    <div class="card-name">Northridge Toyota</div>
+    <div class="card-desc">Northridge, CA &mdash; San Fernando Valley dealer with large inventory.</div>
+    <div class="card-arrow">View Inventory &#8594;</div>
+  </a>
+
 </div>
-<div class="manual-section">
-  <h2>&#128279; Search Manually on All Platforms</h2>
-  <div class="manual-links"><a href="https://www.autotrader.com/cars-for-sale/used-cars/toyota/sienna/lakewood-ca-90712?minPrice=26000&maxPrice=46000&startYear=2021&endYear=2025&trimCodeList=SIENNA%7CXLE&searchRadius=500&extColorsSimple=RED" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; AutoTrader</a><a href="https://www.cars.com/shopping/results/?makes[]=toyota&models[]=toyota-sienna&list_price_max=46000&list_price_min=26000&year_max=2025&year_min=2021&zip=90712&maximum_distance=500&stock_type=used" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Cars.com</a><a href="https://www.cargurus.com/Cars/new/nl_Toyota_Sienna_d2280?zip=90712&distance=500&minPrice=26000&maxPrice=46000&minYear=2021&maxYear=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarGurus</a><a href="https://www.truecar.com/used-cars-for-sale/listings/toyota/sienna/?zip=90712&searchRadius=500&price%5Bmax%5D=46000&price%5Bmin%5D=26000&year%5Bmax%5D=2025&year%5Bmin%5D=2021&trim%5B%5D=XLE" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; TrueCar</a><a href="https://www.edmunds.com/toyota/sienna/used/#zip=90712&radius=500" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Edmunds</a><a href="https://www.kbb.com/toyota/sienna/used-cars/#zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; KBB</a><a href="https://www.carsdirect.com/cars-for-sale/toyota/sienna?zip=90712&distance=500&min_price=26000&max_price=46000&min_year=2021&max_year=2025" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; CarsDirect</a><a href="https://losangeles.craigslist.org/search/cta?query=toyota+sienna+xle&min_price=26000&max_price=46000&sort=date" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; Craigslist LA</a><a href="https://www.ebay.com/sch/Cars-Trucks/6001/i.html?_nkw=toyota+sienna+xle&LH_BIN=1&_udlo=26000&_udhi=46000&LH_ItemCondition=3000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; eBay Motors</a><a href="https://www.dealerrater.com/cars-for-sale/toyota/sienna/?zip=90712&distance=500&minyear=2021&maxyear=2025&minprice=26000&maxprice=46000" target="_blank" rel="noopener noreferrer" class="manual-link">&#128279; DealerRater</a></div>
-</div>
-<footer>Red Toyota Sienna XLE Finder &nbsp;&bull;&nbsp; Lakewood CA 90712 &nbsp;&bull;&nbsp; Runs daily until May 17, 2026</footer>
-<script>
-(function(){
-  var grid = document.getElementById('grid');
-  window.sortCards = function(method, btn) {
-    var cards = Array.from(grid.querySelectorAll('.card'));
-    cards.sort(function(a,b){
-      switch(method){
-        case 'price_asc':  return (parseInt(a.dataset.price)||999999)-(parseInt(b.dataset.price)||999999);
-        case 'price_desc': return (parseInt(b.dataset.price)||0)-(parseInt(a.dataset.price)||0);
-        case 'mileage':    return (parseInt(a.dataset.mileage)||999999)-(parseInt(b.dataset.mileage)||999999);
-        case 'distance':   return (parseFloat(a.dataset.distance)||9999)-(parseFloat(b.dataset.distance)||9999);
-        default:           return new Date(b.dataset.date)-new Date(a.dataset.date);
-      }
-    });
-    cards.forEach(function(c){grid.appendChild(c);});
-    document.querySelectorAll('.sort-btn').forEach(function(el){el.classList.remove('active');});
-    if(btn) btn.classList.add('active');
-  };
-})();
-</script>
+
+<footer>
+  Red Toyota Sienna XLE &nbsp;&bull;&nbsp; 2021&ndash;2025 &nbsp;&bull;&nbsp; $26k&ndash;$46k &nbsp;&bull;&nbsp; 500 mi from Lakewood CA 90712 &nbsp;&bull;&nbsp; All searches pre-filtered
+</footer>
+
 </body>
 </html>
