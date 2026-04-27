@@ -62,4 +62,4 @@ jobs:
         if: steps.date-check.outputs.expired == 'false'
         run: python email_sender.py
         env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}

@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Red Sienna Finder — Email sender via Resend API
+Red Sienna Finder — Email sender via Gmail SMTP
 """
 
 import json
 import os
-import requests
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from datetime import datetime, timezone
 
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+GMAIL_USER = 'jventersecure@gmail.com'
+GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', '')
 PAGES_URL = 'https://analyticaaeternum.github.io/red-sienna-search'
-FROM_EMAIL = 'onboarding@resend.dev'
 RECIPIENTS = ['janusventer@proton.me', 'venterlm26@gmail.com']
 
 
@@ -54,9 +56,9 @@ def send_email(listings):
     section_title = 'Latest New Listings' if new_listings else 'Latest Listings'
 
     if not cards:
-        cards = '<p style="color:#666;font-size:14px;">No listings found today. Use the page links below to search manually.</p>'
+        cards = '<p style="color:#666;font-size:14px;">No listings found today. Use the page links to search manually.</p>'
 
-    subject = f"&#128663; Red Sienna Finder — {today} — {total} Listings ({new_count} New)"
+    subject = f"Red Sienna Finder — {today} — {total} Listings ({new_count} New)"
 
     html_body = f'''<!DOCTYPE html>
 <html>
@@ -65,9 +67,7 @@ def send_email(listings):
 
   <div style="background:linear-gradient(135deg,#1a0000,#2d0000);border-bottom:3px solid #cc0000;
               padding:24px;border-radius:12px 12px 0 0;text-align:center;">
-    <h1 style="color:#ff4444;font-size:22px;margin:0;text-shadow:0 0 20px rgba(255,68,68,.4);">
-      &#128663; Red Toyota Sienna XLE Finder
-    </h1>
+    <h1 style="color:#ff4444;font-size:22px;margin:0;">&#128663; Red Toyota Sienna XLE Finder</h1>
     <p style="color:#aaa;margin:8px 0 0;font-size:14px;">{today}</p>
   </div>
 
@@ -109,33 +109,24 @@ def send_email(listings):
 </body>
 </html>'''
 
-    payload = {
-        'from': FROM_EMAIL,
-        'to': RECIPIENTS,
-        'subject': subject,
-        'html': html_body,
-    }
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = f'Red Sienna Finder <{GMAIL_USER}>'
+    msg['To'] = ', '.join(RECIPIENTS)
+    msg.attach(MIMEText(html_body, 'html'))
 
-    resp = requests.post(
-        'https://api.resend.com/emails',
-        headers={
-            'Authorization': f'Bearer {RESEND_API_KEY}',
-            'Content-Type': 'application/json',
-        },
-        json=payload,
-        timeout=15,
-    )
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.ehlo()
+        server.starttls()
+        server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+        server.sendmail(GMAIL_USER, RECIPIENTS, msg.as_string())
 
-    if resp.status_code in (200, 201):
-        print(f'Email sent successfully — subject: {subject}')
-    else:
-        print(f'Email failed ({resp.status_code}): {resp.text}')
-        resp.raise_for_status()
+    print(f'Email sent: {subject}')
 
 
 def main():
-    if not RESEND_API_KEY:
-        print('RESEND_API_KEY not set — skipping email')
+    if not GMAIL_APP_PASSWORD:
+        print('GMAIL_APP_PASSWORD not set — skipping email')
         return
     listings = load_listings()
     send_email(listings)
